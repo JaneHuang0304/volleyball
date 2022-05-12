@@ -32,13 +32,11 @@ export class TableCtr extends Component {
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
         let ballPos = otherCollider.node.getPosition().x;
 
-        // console.log(`ballPos:: ${ballPos}`);
-
         if (ballPos > -443 && ballPos < 7) {
             this.location = 'left';
         }
 
-        if (ballPos < 433 && ballPos > 7) {
+        if (ballPos < 443 && ballPos > 7) {
             this.location = 'right';
         }
 

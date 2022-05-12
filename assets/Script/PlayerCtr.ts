@@ -1,6 +1,6 @@
 
 import { _decorator, Component, Node, input, Input, EventKeyboard, KeyCode, Vec3, 
-        Collider2D, Contact2DType, IPhysics2DContact, RigidBody2D, Sprite, Animation } from 'cc';
+        Collider2D, Contact2DType, IPhysics2DContact, RigidBody2D, Sprite, Animation, BoxCollider2D, BatchedSkinningModelComponent } from 'cc';
 import { BallCtr } from './BallCtr';
 const { ccclass, property } = _decorator;
 
@@ -55,7 +55,7 @@ export class PlayerCtr extends Component {
         if (this.ballSprite) {
             let ballController = this.ballSprite.getComponent(BallCtr);
             if (type == "jump"){
-                ballController.setBalllv(13, -8, 1.5);
+                ballController.setBalllv(13, -10, 1.5);
             }
             
             if (type == "lean"){
@@ -113,8 +113,11 @@ export class PlayerCtr extends Component {
 
     update (deltaTime: number) {
         if (this.isAction){
+            let playerPos = this.node.getPosition();
+            let slothPos = this.Sloth.node.getPosition();
+            this.node.setPosition(new Vec3(playerPos.x, -173 + slothPos.y, playerPos.z));
             this.speed += deltaTime;
-            if (this.speed >= 0.35){
+            if (this.speed >= 0.37){
                 this.isAction = false;
                 this.speed = 0;
             }

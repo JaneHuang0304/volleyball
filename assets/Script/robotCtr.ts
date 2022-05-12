@@ -84,8 +84,11 @@ export class robotCtr extends Component {
 
     update (deltaTime: number) {
         if (this.isAction){
+            let robotMagPos = this.node.getPosition();
+            let robotPos = this.Sloth2.node.getPosition();
+            this.node.setPosition(new Vec3(robotMagPos.x, -173 + robotPos.y, robotMagPos.z));
             this.speed += deltaTime;
-            if (this.speed >= 0.35){
+            if (this.speed >= 0.37){
                 this.isAction = false;
                 this.speed = 0;
             }
