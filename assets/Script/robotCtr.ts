@@ -104,7 +104,7 @@ export class robotCtr extends Component {
                             }
                             this.node.setPosition(robotPos);
     
-                            if (ballPos.y < 130){
+                            if (ballPos.y < 130 && ballPos.y > 100){
                                 this.animation.play("r_jump");
                                 this.isAction = true;
                             }
