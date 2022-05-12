@@ -55,7 +55,7 @@ export class PlayerCtr extends Component {
         if (this.ballSprite) {
             let ballController = this.ballSprite.getComponent(BallCtr);
             if (type == "jump"){
-                ballController.setBalllv(13, -10, 1.5);
+                ballController.setBalllv(30, 0, 5);
             }
             
             if (type == "lean"){

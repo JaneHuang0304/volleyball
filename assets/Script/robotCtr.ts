@@ -32,6 +32,7 @@ export class robotCtr extends Component {
     private speed = 0;
     private moveSpeed = 0;
     public isStart = false;
+    private ActType: string;
 
     start () {
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
@@ -44,7 +45,7 @@ export class robotCtr extends Component {
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {        
         if (otherCollider.name == "ball<BoxCollider2D>"){
             this.isStart = false;
-            this.setBallCtr();
+            this.setBallCtr(this.ActType);
         }
     }
 
@@ -68,6 +69,7 @@ export class robotCtr extends Component {
                 if (!this.isAction){
                     this.isAction = true;
                     this.animation.play("r_jump");
+                    this.ActType = "jump";
                 }
                 break;
         }  
@@ -75,10 +77,14 @@ export class robotCtr extends Component {
         this.node.setPosition(Pos);   
     }
 
-    setBallCtr(){
+    setBallCtr(typr: string){
         if (this.ballSprite) {
             let ballController = this.ballSprite.getComponent(BallCtr);
-            ballController.setBalllv(-13, -8, 1);
+            if (this.ActType == "jump"){
+                ballController.setBalllv(-30, 0, 5);
+            }else{
+                ballController.setBalllv(-13, -8, 1);
+            }
         }        
     }
 
@@ -90,6 +96,7 @@ export class robotCtr extends Component {
             this.speed += deltaTime;
             if (this.speed >= 0.37){
                 this.isAction = false;
+                this.ActType = "lean";
                 this.speed = 0;
             }
         }else {
@@ -110,6 +117,7 @@ export class robotCtr extends Component {
                             if (ballPos.y < 130 && ballPos.y > 100){
                                 this.animation.play("r_jump");
                                 this.isAction = true;
+                                this.ActType = "jump";
                             }
                             this.moveSpeed = 0;
                         }

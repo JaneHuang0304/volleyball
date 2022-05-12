@@ -65,8 +65,6 @@ export class GameCtr extends Component {
 
     async onTableRet(location: string){
         let startLoc: string;
-
-        //console.log(`returnlocation:: ${location}`);
         
         if (location == 'left') {
             this.robtoScore += 1;
@@ -77,8 +75,6 @@ export class GameCtr extends Component {
             this.Score += 1;
             startLoc = "left";
         }
-
-        //console.log(`nowlocation::: ${startLoc}`);
 
         if (this.Score == 10 || this.robtoScore == 10) {
             this.onEndGame();
