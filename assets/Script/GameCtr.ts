@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Node, Sprite, Label, Vec3, Prefab } from 'cc';
+import { _decorator, Component, Node, Sprite, Label, Vec3, Prefab, PhysicsSystem2D } from 'cc';
 import { TableCtr } from './TableCtr';
 import { BallCtr } from './BallCtr';
 import { PlayerCtr } from './PlayerCtr';
@@ -48,8 +48,10 @@ export class GameCtr extends Component {
     private Score = 0;
     private robtoScore = 0;
     private isSetlv = true;
-
+ß
     start () {
+        PhysicsSystem2D.instance.enable = true;
+        PhysicsSystem2D.instance.debugDrawFlags = 1;
         this.tableCtrl?.node.on('TableRet', this.onTableRet, this);
     }
 
@@ -119,13 +121,13 @@ export class GameCtr extends Component {
 
         if (this.PlayerCtrl){
             setTimeout(() => {
-                this.PlayerCtrl.node.setPosition(new Vec3(-215, -173, 0));
+                this.PlayerCtrl.node.setPosition(new Vec3(-224, -173, 0));
             }, 1);
         }
 
         if (this.robotCtrl){
             setTimeout(() => {
-                this.robotCtrl.node.setPosition(new Vec3(280, -173, 0));
+                this.robotCtrl.node.setPosition(new Vec3(224, -173, 0));
             }, 1);
         }
         

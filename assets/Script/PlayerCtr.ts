@@ -42,11 +42,24 @@ export class PlayerCtr extends Component {
         if (this.Sloth){
             this.animation = this.Sloth.getComponent(Animation);
         }
-
     }
 
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-      if (otherCollider.name == "ball<BoxCollider2D>"){
+        if (otherCollider.name == "bottom<BoxCollider2D>"){
+            console.log(`!!!!!`);
+            // setTimeout(()=>{ 
+            //     let lv = this.node.getComponent(RigidBody2D).linearVelocity;
+            //     lv.y = 0;
+            //     lv.x = 0;
+            //     this.node.getComponent(RigidBody2D).linearVelocity = lv;
+            //     let gravity = this.node.getComponent(RigidBody2D).gravityScale;
+            //     gravity = 0;
+            //     this.node.setPosition(new Vec3(-224, -173, 0));
+            // },1);
+
+        }
+        
+       if (otherCollider.name == "ball<BoxCollider2D>"){
           this.setBallCtr(this.ActionType);
       }  
     }
@@ -81,13 +94,13 @@ export class PlayerCtr extends Component {
 
             case KeyCode.ARROW_RIGHT:
                 if (Pos.x < -92 && !this.isAction){
-                    Vec3.add(Pos, Pos, new Vec3(30, 0, 0));
+                    Vec3.add(Pos, Pos, new Vec3(30, 0, 0));  
                 }
                 break;
 
             case KeyCode.ARROW_LEFT:
                 if (Pos.x > -412 && !this.isAction) {
-                    Vec3.add(Pos, Pos, new Vec3(-30, 0, 0));
+                    Vec3.add(Pos, Pos, new Vec3(-30, 0, 0));   
                 }
                 break;
 
@@ -107,15 +120,11 @@ export class PlayerCtr extends Component {
                 }
                 break;
         }  
-
-        this.node.setPosition(Pos);   
+        this.node.setPosition(Pos);
     }
 
     update (deltaTime: number) {
         if (this.isAction){
-            let playerPos = this.node.getPosition();
-            let slothPos = this.Sloth.node.getPosition();
-            this.node.setPosition(new Vec3(playerPos.x, -173 + slothPos.y, playerPos.z));
             this.speed += deltaTime;
             if (this.speed >= 0.37){
                 this.isAction = false;

@@ -1256,15 +1256,15 @@
     "bullet": false,
     "awakeOnLoad": true,
     "_group": 1,
-    "_type": 0,
+    "_type": 2,
     "_allowSleep": true,
-    "_gravityScale": 0,
+    "_gravityScale": 1,
     "_linearDamping": 0,
     "_angularDamping": 0,
     "_linearVelocity": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": 0
+      "y": 18
     },
     "_angularVelocity": 0,
     "_fixedRotation": false,
@@ -1284,7 +1284,7 @@
     "_density": 0,
     "_sensor": false,
     "_friction": 0,
-    "_restitution": 2,
+    "_restitution": 0,
     "_offset": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -1954,7 +1954,7 @@
     "_density": 0,
     "_sensor": false,
     "_friction": 0,
-    "_restitution": 1.5,
+    "_restitution": 0,
     "_offset": {
       "__type__": "cc.Vec2",
       "x": 0,
