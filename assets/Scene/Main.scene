@@ -300,7 +300,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -224,
-      "y": -173,
+      "y": -178,
       "z": 0
     },
     "_lrot": {
@@ -778,7 +778,7 @@
     "_density": 0,
     "_sensor": false,
     "_friction": 0,
-    "_restitution": 1,
+    "_restitution": 0,
     "_offset": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -1230,7 +1230,7 @@
     "_density": 0,
     "_sensor": false,
     "_friction": 0,
-    "_restitution": 0,
+    "_restitution": 1,
     "_offset": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -1256,18 +1256,18 @@
     "bullet": false,
     "awakeOnLoad": true,
     "_group": 1,
-    "_type": 2,
+    "_type": 0,
     "_allowSleep": true,
-    "_gravityScale": 1,
+    "_gravityScale": 0,
     "_linearDamping": 0,
     "_angularDamping": 0,
     "_linearVelocity": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": 18
+      "y": 0
     },
     "_angularVelocity": 0,
-    "_fixedRotation": false,
+    "_fixedRotation": true,
     "_id": "61USC6MeBPYKHlIw4S2Myo"
   },
   {
@@ -1281,7 +1281,7 @@
     "__prefab": null,
     "tag": 0,
     "_group": 1,
-    "_density": 0,
+    "_density": 30,
     "_sensor": false,
     "_friction": 0,
     "_restitution": 0,
@@ -1328,7 +1328,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 224,
-      "y": -173,
+      "y": -178,
       "z": 0
     },
     "_lrot": {
@@ -1546,7 +1546,7 @@
       "y": 0
     },
     "_angularVelocity": 0,
-    "_fixedRotation": false,
+    "_fixedRotation": true,
     "_id": "4al40yIdVCMYewgFaYaVYi"
   },
   {
@@ -1560,10 +1560,10 @@
     "__prefab": null,
     "tag": 0,
     "_group": 1,
-    "_density": 0,
+    "_density": 10,
     "_sensor": false,
     "_friction": 0,
-    "_restitution": 2,
+    "_restitution": 0,
     "_offset": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -1785,7 +1785,7 @@
     "_density": 0,
     "_sensor": false,
     "_friction": 0,
-    "_restitution": 1.5,
+    "_restitution": 0,
     "_offset": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -2134,7 +2134,7 @@
     "_density": 0,
     "_sensor": false,
     "_friction": 0,
-    "_restitution": 1.5,
+    "_restitution": 0,
     "_offset": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -2300,7 +2300,7 @@
     "_density": 0,
     "_sensor": false,
     "_friction": 0,
-    "_restitution": 1.5,
+    "_restitution": 0,
     "_offset": {
       "__type__": "cc.Vec2",
       "x": 0,

@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Node, RigidBody2D, Vec3 } from 'cc';
+import { _decorator, Component, Node, RigidBody2D, Vec3, BoxCollider2D, Collider2D, Contact2DType, IPhysics2DContact } from 'cc';
 const { ccclass, property } = _decorator;
 
 /**
@@ -18,10 +18,19 @@ const { ccclass, property } = _decorator;
 export class BallCtr extends Component {
 
     start () {
-
+        let ballCollider = this.getComponent(Collider2D);
+        if (ballCollider) {
+            ballCollider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+        }
     }
 
-    setBalllv(x, y, gv: number){
+    private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
+        if (otherCollider.name == "top<BoxCollider2D>"){           
+           this.setBalllv(20, -3, 5, 0.5);
+        }  
+     }
+
+    setBalllv(x, y, gv, rt: number){
         let lv = this.node.getComponent(RigidBody2D).linearVelocity;
         let gravy = this.node.getComponent(RigidBody2D).gravityScale;
         gravy = gv;
@@ -29,6 +38,7 @@ export class BallCtr extends Component {
         lv.y = y;
         this.node.getComponent(RigidBody2D).linearVelocity = lv;    
         this.node.getComponent(RigidBody2D).gravityScale = gravy;  
+        this.node.getComponent(BoxCollider2D).restitution = rt;
     }
 
     // update (deltaTime: number) {

@@ -81,9 +81,9 @@ export class robotCtr extends Component {
         if (this.ballSprite) {
             let ballController = this.ballSprite.getComponent(BallCtr);
             if (this.ActType == "jump"){
-                ballController.setBalllv(-30, 0, 5);
+                ballController.setBalllv(-30, 0, 5, 1);
             }else{
-                ballController.setBalllv(-13, -8, 1);
+                ballController.setBalllv(-13, -8, 1, 1);
             }
         }        
     }

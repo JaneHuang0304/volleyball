@@ -30,17 +30,19 @@ export class TableCtr extends Component {
     }
 
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-        let ballPos = otherCollider.node.getPosition().x;
+        if (otherCollider.name == "ball<BoxCollider2D>"){
+            let ballPos = otherCollider.node.getPosition().x;
 
-        if (ballPos > -443 && ballPos < 7) {
-            this.location = 'left';
+            if (ballPos > -443 && ballPos < 7) {
+                this.location = 'left';
+            }
+    
+            if (ballPos < 443 && ballPos > 7) {
+                this.location = 'right';
+            }
+    
+            this.node.emit('TableRet', this.location);
         }
-
-        if (ballPos < 443 && ballPos > 7) {
-            this.location = 'right';
-        }
-
-        this.node.emit('TableRet', this.location);
 
         // if (this.ballSprite) {
         //     let ballController = this.ballSprite.getComponent(BallCtr);

@@ -103,7 +103,7 @@ export class GameCtr extends Component {
 
         if (this.ballSprite) {
             ballController = this.ballSprite.getComponent(BallCtr);
-            ballController.setBalllv(0, 0, 0); 
+            ballController.setBalllv(0, 0, 0, 1); 
         }   
 
         if (start == "right"){
@@ -118,18 +118,6 @@ export class GameCtr extends Component {
                 this.ballSprite.node.setPosition(ballPos);
             }, 1);
         }
-
-        if (this.PlayerCtrl){
-            setTimeout(() => {
-                this.PlayerCtrl.node.setPosition(new Vec3(-224, -173, 0));
-            }, 1);
-        }
-
-        if (this.robotCtrl){
-            setTimeout(() => {
-                this.robotCtrl.node.setPosition(new Vec3(224, -173, 0));
-            }, 1);
-        }
         
         return new Promise((resolve, reject) => {
             if (this.isSetlv){
@@ -137,7 +125,7 @@ export class GameCtr extends Component {
                     if (this.readylab){
                         this.readylab.node.active = false;
                     }
-                    ballController.setBalllv(0, 4, 1); 
+                    ballController.setBalllv(0, 4, 1, 1); 
                     resolve("");               
                 }, 500);
             }else{
