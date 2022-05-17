@@ -1,6 +1,6 @@
 
 import { _decorator, Component, Node, Sprite, Collider2D, Contact2DType, IPhysics2DContact, 
-        input, Input,  EventKeyboard, KeyCode, Vec3, Animation} from 'cc';
+        input, Input,  EventKeyboard, KeyCode, Vec3, Animation, RigidBody2D} from 'cc';
 import { BallCtr } from './BallCtr';
 const { ccclass, property } = _decorator;
 
@@ -35,7 +35,6 @@ export class robotCtr extends Component {
     private ActType: string;
 
     start () {
-        input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
         let ballCollider = this.getComponent(Collider2D);
         if (ballCollider) {
             ballCollider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
@@ -49,79 +48,71 @@ export class robotCtr extends Component {
         }
     }
 
-    onKeyDown(event: EventKeyboard){
-        let Pos = this.node.getPosition();
-        switch(event.keyCode){
-
-            case KeyCode.KEY_X:
-                if (Pos.x < 380 && !this.isAction){
-                    Vec3.add(Pos, Pos, new Vec3(30, 0, 0));
-                }
-                break;
-
-            case KeyCode.KEY_Z:
-                if (Pos.x > 90 && !this.isAction) {
-                    Vec3.add(Pos, Pos, new Vec3(-30, 0, 0));
-                }
-                break;
-
-            case KeyCode.KEY_S:
-                if (!this.isAction){
-                    this.isAction = true;
-                    this.animation.play("r_jump");
-                    this.ActType = "jump";
-                }
-                break;
-        }  
-
-        this.node.setPosition(Pos);   
-    }
-
     setBallCtr(typr: string){
         if (this.ballSprite) {
             let ballController = this.ballSprite.getComponent(BallCtr);
             if (this.ActType == "jump"){
-                ballController.setBalllv(-30, 0, 5, 1);
+                ballController.setBalllv(-15, -2, 8, 1);
             }else{
-                ballController.setBalllv(-13, -8, 1, 1);
+                ballController.setBalllv(-13, 10, 1.5, 1);
             }
         }        
     }
 
+    setRigidBody(type, x, y, gv: number){
+        this.node.getComponent(RigidBody2D).type = type;
+        let lv = this.node.getComponent(RigidBody2D).linearVelocity;
+        lv.x = x == null ? lv.x : x;
+        lv.y = y == null ? lv.y : y;
+        this.node.getComponent(RigidBody2D).linearVelocity = lv;
+        this.node.getComponent(RigidBody2D).gravityScale = gv;
+    }
+
     update (deltaTime: number) {
         if (this.isAction){
-            let robotMagPos = this.node.getPosition();
-            let robotPos = this.Sloth2.node.getPosition();
-            this.node.setPosition(new Vec3(robotMagPos.x, -173 + robotPos.y, robotMagPos.z));
             this.speed += deltaTime;
-            if (this.speed >= 0.37){
+            if (this.speed >= 0.8){
                 this.isAction = false;
-                this.ActType = "lean";
+                this.ActType = "ini";
                 this.speed = 0;
+                this.setRigidBody(2, 0, 0, 30);
             }
         }else {
             if (this.ballSprite){
                 this.moveSpeed += deltaTime;
                 let robotPos = this.node.getPosition();
                 let ballPos = this.ballSprite.node.getPosition();
-                if (!this.isStart){
-                    if (ballPos.x > 70 && ballPos.x < 400){
-                        if (this.moveSpeed > 0.08){
-                            if (robotPos.x > ballPos.x){
-                                Vec3.add(robotPos, robotPos, new Vec3(-30, 0, 0));
-                            } else{
-                                Vec3.add(robotPos, robotPos, new Vec3(30, 0, 0));
+                let ballbody = this.ballSprite.node.getComponent(RigidBody2D).linearVelocity;
+                let rangX = robotPos.x - ballPos.x > 0 ? robotPos.x - ballPos.x : -(robotPos.x - ballPos.x);
+                if (ballPos.x > 70 && ballPos.x < 400){
+                    if (this.moveSpeed > 0.06){    
+                        if (rangX > 30) {
+                            if (rangX > 80) {
+                                this.ActType = "lean";
+                                if (robotPos.x > ballPos.x){
+                                    this.setRigidBody(2, -80, null, 7);
+                                } else{
+                                    this.setRigidBody(2, 80, null, 7);
+                                }
+                            } else {
+                                if (robotPos.x > ballPos.x){
+                                    this.setRigidBody(2, -30, null, 7);
+                                } else{
+                                    this.setRigidBody(2, 30, null, 7);
+                                }
                             }
-                            this.node.setPosition(robotPos);
-    
-                            if (ballPos.y < 130 && ballPos.y > 100){
-                                this.animation.play("r_jump");
+                            setTimeout(() => {
+                                this.setRigidBody(2, 0, 0, 30);
+                            }, 10);
+                        } else {
+                            if (ballPos.y < 130 && ballPos.y > 90){
+                                this.setRigidBody(2, null, 40, 10);
                                 this.isAction = true;
                                 this.ActType = "jump";
                             }
-                            this.moveSpeed = 0;
                         }
-                    }
+                        this.moveSpeed = 0;
+                    } 
                 }
             }
         }

@@ -25,8 +25,12 @@ export class BallCtr extends Component {
     }
 
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-        if (otherCollider.name == "top<BoxCollider2D>"){           
-           this.setBalllv(20, -3, 5, 0.5);
+        if (otherCollider.name == "top<BoxCollider2D>"){         
+            if (this.node.getPosition().x > 7){
+                this.setBalllv(-20, -3, 5, 0.5);
+            } else {
+                this.setBalllv(20, -3, 5, 0.5);
+            }
         }  
      }
 

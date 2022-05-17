@@ -97,9 +97,9 @@ export class GameCtr extends Component {
         let ballPos = new Vec3();
         let ballController: BallCtr;
 
-        if (this.robotCtrl){
-            this.robotCtrl.isStart = true;
-        }
+        // if (this.robotCtrl){
+        //     this.robotCtrl.isStart = true;
+        // }
 
         if (this.ballSprite) {
             ballController = this.ballSprite.getComponent(BallCtr);

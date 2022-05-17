@@ -31,6 +31,7 @@ export class PlayerCtr extends Component {
     private isAction = false;
     private speed = 0;
     private ActionType: string;
+    private anim: Animation;
 
     start () {
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
@@ -40,6 +41,8 @@ export class PlayerCtr extends Component {
             ballCollider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
         }
 
+        this.anim = this.node.getComponent(Animation);
+        
         if (this.Sloth){
             this.animation = this.Sloth.getComponent(Animation);
         }
@@ -66,13 +69,7 @@ export class PlayerCtr extends Component {
             let ballController = this.ballSprite.getComponent(BallCtr);
             if (type == "jump"){
                 ballController.setBalllv(15, -2, 8, 1);
-            }
-            
-            if (type == "lean"){
-                ballController.setBalllv(13, 10, 1.5, 1);
-            }
-
-            if (type == "ini"){
+            } else {
                 ballController.setBalllv(13, 10, 1.5, 1);
             }
         }        
@@ -82,16 +79,10 @@ export class PlayerCtr extends Component {
         let Pos = this.node.getPosition();
         switch(event.keyCode){
             case KeyCode.ARROW_RIGHT:
-                // if (Pos.x < -92 && !this.isAction){
-                //     Vec3.add(Pos, Pos, new Vec3(30, 0, 0));  
-                // }
                 this.setRigidBody(2, 15, null, 7);
                 break;
 
             case KeyCode.ARROW_LEFT:
-                // if (Pos.x > -412 && !this.isAction) {
-                //     Vec3.add(Pos, Pos, new Vec3(-30, 0, 0));   
-                // }
                 this.setRigidBody(2, -15, null, 7);
                 break;
 
@@ -100,7 +91,7 @@ export class PlayerCtr extends Component {
                     this.isAction = true;
                     //let picUrl = 'jump/spriteFrame';
                     //this.setPic(picUrl);
-                    //this.animation.play("lean");
+                    this.animation.play("lean");
                     this.ActionType = "lean";
                 }
                 break;
@@ -108,14 +99,11 @@ export class PlayerCtr extends Component {
             case KeyCode.SPACE:
                 if (!this.isAction){
                     this.isAction = true;
-
                     this.setRigidBody(2, null, 40, 10);
-                    //this.animation.play("jump");
                     this.ActionType = "jump";
                 }
                 break;
         }  
-        //this.node.setPosition(Pos);
     }
 
     setPic(pic: string){
@@ -123,22 +111,15 @@ export class PlayerCtr extends Component {
             let sprite = this.getComponent(Sprite);
             sprite.spriteFrame = spriteFrame;
          });
-
     }
 
     onKeyUp(event: EventKeyboard){
         switch(event.keyCode){
             case KeyCode.ARROW_RIGHT:
-                // if (Pos.x < -92 && !this.isAction){
-                //     Vec3.add(Pos, Pos, new Vec3(30, 0, 0));  
-                // }
                 this.setRigidBody(2, 0, 0, 30);
                 break;
 
             case KeyCode.ARROW_LEFT:
-                // if (Pos.x > -412 && !this.isAction) {
-                //     Vec3.add(Pos, Pos, new Vec3(-30, 0, 0));   
-                // }
                 this.setRigidBody(2, 0, 0, 30);
                 break;  
         }  

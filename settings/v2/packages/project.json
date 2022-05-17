@@ -1,0 +1,49 @@
+{
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "top"
+      },
+      {
+        "index": 2,
+        "name": "bottom"
+      },
+      {
+        "index": 3,
+        "name": "right"
+      },
+      {
+        "index": 4,
+        "name": "left"
+      },
+      {
+        "index": 5,
+        "name": "net"
+      },
+      {
+        "index": 6,
+        "name": "wall"
+      },
+      {
+        "index": 7,
+        "name": "sloth"
+      },
+      {
+        "index": 8,
+        "name": "robot"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 447,
+      "1": 385,
+      "2": 385,
+      "3": 257,
+      "4": 129,
+      "5": 385,
+      "6": 384,
+      "7": 119,
+      "8": 111
+    }
+  }
+}
