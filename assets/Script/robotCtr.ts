@@ -31,7 +31,6 @@ export class robotCtr extends Component {
     private isAction = false;
     private speed = 0;
     private moveSpeed = 0;
-    public isStart = false;
     private ActType: string;
 
     start () {
@@ -43,7 +42,6 @@ export class robotCtr extends Component {
 
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {        
         if (otherCollider.name == "ball<BoxCollider2D>"){
-            this.isStart = false;
             this.setBallCtr(this.ActType);
         }
     }

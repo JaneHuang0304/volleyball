@@ -97,10 +97,6 @@ export class GameCtr extends Component {
         let ballPos = new Vec3();
         let ballController: BallCtr;
 
-        // if (this.robotCtrl){
-        //     this.robotCtrl.isStart = true;
-        // }
-
         if (this.ballSprite) {
             ballController = this.ballSprite.getComponent(BallCtr);
             ballController.setBalllv(0, 0, 0, 1); 
@@ -134,7 +130,7 @@ export class GameCtr extends Component {
         }); 
     }
 
-    async onEndGame(){
+    onEndGame(){
         this.isSetlv = false;
         this.Score = 0;
         this.robtoScore = 0;
@@ -147,8 +143,9 @@ export class GameCtr extends Component {
         }
 
         this.readylab.string = `EndGame!`;
-        this.startMenu.node.active = true;
-        await this.onReSet("left");
+        setTimeout(() => {
+            this.startMenu.node.active = true;
+        },1000);
     }
 
     // update (deltaTime: number) {

@@ -17,6 +17,8 @@ const { ccclass, property } = _decorator;
 @ccclass('BallCtr')
 export class BallCtr extends Component {
 
+    private StartLocation: string;
+
     start () {
         let ballCollider = this.getComponent(Collider2D);
         if (ballCollider) {
@@ -25,8 +27,16 @@ export class BallCtr extends Component {
     }
 
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
+        if (otherCollider.name == "PlayerManager<BoxCollider2D>"){
+            this.StartLocation = "left";
+        }
+
+        if (otherCollider.name == "RobotManager<BoxCollider2D>") {
+            this.StartLocation = "right";
+        }
+
         if (otherCollider.name == "top<BoxCollider2D>"){         
-            if (this.node.getPosition().x > 7){
+            if (this.StartLocation == "right"){
                 this.setBalllv(-20, -3, 5, 0.5);
             } else {
                 this.setBalllv(20, -3, 5, 0.5);
