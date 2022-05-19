@@ -17,9 +17,6 @@ const { ccclass, property } = _decorator;
 @ccclass('TableCtr')
 export class TableCtr extends Component {
 
-    @property({ type: Sprite })
-    public ballSprite: Sprite | null = null;
-
     private location;
 
     start () {
@@ -43,11 +40,6 @@ export class TableCtr extends Component {
     
             this.node.emit('TableRet', this.location);
         }
-
-        // if (this.ballSprite) {
-        //     let ballController = this.ballSprite.getComponent(BallCtr);
-        //     ballController.setBalllv(7, 14, 0.1);
-        // }
     }
 
     // update (deltaTime: number) {

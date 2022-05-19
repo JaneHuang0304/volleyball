@@ -132,6 +132,12 @@ export class GameCtr extends Component {
 
     onEndGame(){
         this.isSetlv = false;
+        this.readylab.string = `EndGame!`;
+        
+        setTimeout(() => {
+            this.startMenu.node.active = true;
+        }, 3000);
+
         this.Score = 0;
         this.robtoScore = 0;
         if (this.Scorelab) {
@@ -141,11 +147,6 @@ export class GameCtr extends Component {
         if (this.robotScorelab){
             this.robotScorelab.string = `${this.robtoScore}`;
         }
-
-        this.readylab.string = `EndGame!`;
-        setTimeout(() => {
-            this.startMenu.node.active = true;
-        },1000);
     }
 
     // update (deltaTime: number) {

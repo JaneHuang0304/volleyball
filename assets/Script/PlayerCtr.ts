@@ -31,7 +31,6 @@ export class PlayerCtr extends Component {
     private isAction = false;
     private speed = 0;
     private ActionType: string;
-    private anim: Animation;
 
     start () {
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
@@ -40,8 +39,6 @@ export class PlayerCtr extends Component {
         if (ballCollider) {
             ballCollider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
         }
-
-        this.anim = this.node.getComponent(Animation);
         
         if (this.Sloth){
             this.animation = this.Sloth.getComponent(Animation);
@@ -89,8 +86,6 @@ export class PlayerCtr extends Component {
             case KeyCode.ARROW_DOWN:
                 if (Pos.x < -92 && !this.isAction){
                     this.isAction = true;
-                    //let picUrl = 'jump/spriteFrame';
-                    //this.setPic(picUrl);
                     this.animation.play("lean");
                     this.ActionType = "lean";
                 }
@@ -104,13 +99,6 @@ export class PlayerCtr extends Component {
                 }
                 break;
         }  
-    }
-
-    setPic(pic: string){
-        resources.load(pic, SpriteFrame, (err: any, spriteFrame) => {
-            let sprite = this.getComponent(Sprite);
-            sprite.spriteFrame = spriteFrame;
-         });
     }
 
     onKeyUp(event: EventKeyboard){
