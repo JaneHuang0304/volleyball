@@ -1,9 +1,11 @@
 
-import { _decorator, Component, Node, Sprite, Label, Vec3, Prefab, PhysicsSystem2D } from 'cc';
+import { _decorator, Component, Node, Sprite, Label, Vec3, Prefab, PhysicsSystem2D, resources, SpriteFrame, instantiate, 
+        input, Input, EventKeyboard, KeyCode } from 'cc';
 import { TableCtr } from './TableCtr';
 import { BallCtr } from './BallCtr';
 import { PlayerCtr } from './PlayerCtr';
 import { robotCtr } from './robotCtr';
+import { ToolCtr } from './ToolCtr';
 const { ccclass, property } = _decorator;
 
 /**
@@ -45,18 +47,68 @@ export class GameCtr extends Component {
     @property({ type: Sprite })
     public startMenu: Sprite | null = null;
 
+    @property({ type: Sprite })
+    public BGSprite: Sprite | null = null;
+
+    @property({ type: Prefab })
+    public ToolPrefab: Prefab | null = null;
+
     private Score = 0;
     private robtoScore = 0;
     private isSetlv = true;
-ß
+    private tool: Node;
+
     start () {
         PhysicsSystem2D.instance.enable = true;
         PhysicsSystem2D.instance.debugDrawFlags = 1;
         this.tableCtrl?.node.on('TableRet', this.onTableRet, this);
+        this.tableCtrl?.node.on('TableRet', this.onTableRet, this);
+        this.robotCtrl?.node.on('GetTool', this.onGetTool, this);
+        this.PlayerCtrl?.node.on('GetTool', this.onGetTool, this);
+        if (this.startMenu.node.active == true){
+            input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
+        }
+    }
+
+    onKeyDown(event: EventKeyboard) {
+        let Pos = this.node.getPosition();
+        switch(event.keyCode){
+            case KeyCode.ENTER:
+                this.onButtonClick();
+                break;
+        }  
+    }
+
+    onGetTool(){
+        let rand = Math.floor(Math.random()*2);
+        let picUrl: string;
+        if (rand == 0) {
+            picUrl = 'ball2/spriteFrame';
+        } else {
+            picUrl = 'ball3/spriteFrame';
+        }
+        this.setBallType(picUrl);
+
+        setTimeout(() => {
+            this.tool.active = false;
+            this.tool = undefined;
+            this.node.removeChild(this.tool);
+        }, 1);
     }
 
     async onButtonClick(){
         if (this.startMenu){
+            this.Score = 0;
+            this.robtoScore = 0;
+            if (this.Scorelab) {
+                this.Scorelab.string = `${this.Score}`;
+            }
+    
+            if (this.robotScorelab){
+                this.robotScorelab.string = `${this.robtoScore}`;
+            }
+            let picUrl = 'back/spriteFrame';
+            this.setBG(picUrl);
             this.startMenu.node.active = false;
             this.readylab.string = `Ready!`;
             this.readylab.node.active = true;
@@ -67,6 +119,7 @@ export class GameCtr extends Component {
 
     async onTableRet(location: string){
         let startLoc: string;
+        let ballController = this.ballSprite.getComponent(BallCtr);
         
         if (location == 'left') {
             this.robtoScore += 1;
@@ -76,6 +129,28 @@ export class GameCtr extends Component {
         if (location == 'right') {
             this.Score += 1;
             startLoc = "left";
+        }
+
+        if (ballController.getBallFrame() > -1){
+            let picUrl = 'ball/spriteFrame';
+            this.setBallType(picUrl);
+        }
+
+        if (this.Score >= 5 || this.robtoScore >= 5){
+            let picUrl = 'Bg2/spriteFrame';
+            this.setBG(picUrl);
+        }
+
+        if (this.tool == undefined){
+            if (this.Score - this.robtoScore >= 3){
+                setTimeout(() => {
+                    this.setTool("right");
+                }, 1);
+            } else if (this.Score - this.robtoScore <= -3){
+                setTimeout(() => {
+                    this.setTool("left");
+                }, 1);
+            } 
         }
 
         if (this.Score == 10 || this.robtoScore == 10) {
@@ -90,6 +165,61 @@ export class GameCtr extends Component {
             }
             this.readylab.node.active = true;
             await this.onReSet(startLoc);
+        }
+    }
+
+    setBG(pic: string){
+        resources.load(pic, SpriteFrame, (err: any, spriteFrame) => {
+            let sprite = this.BGSprite.getComponent(Sprite);
+            sprite.spriteFrame = spriteFrame;
+         });
+    }
+
+    setBallType(pic: string){
+        resources.load(pic, SpriteFrame, (err: any, spriteFrame) => {
+            let sprite = this.ballSprite.getComponent(Sprite);
+            sprite.spriteFrame = spriteFrame;
+         });
+    }
+
+    setTool(location: string){
+        if (this.ToolPrefab){
+            this.tool = instantiate(this.ToolPrefab);
+            let toolController = this.tool.getComponent(ToolCtr); 
+            this.node.addChild(this.tool); 
+            let setPos: Vec3;
+
+            if (location == "right") {
+                let Pos = this.robotCtrl.node.getPosition().x;
+                if (Pos < 72){
+                    setPos = new Vec3(Pos + 100, -270, 0);
+                } else if (Pos > 400){
+                    setPos = new Vec3(Pos - 100, -270, 0);
+                } else {
+                    if (Pos > 224){
+                        setPos = new Vec3(Pos - 100, -270, 0);
+                    } else {
+                        setPos = new Vec3(Pos + 100, -270, 0);
+                    }
+                }
+                toolController.node.setPosition(setPos);
+            }
+    
+            if (location == "left") {
+                let Pos = this.PlayerCtrl.node.getPosition().x;
+                if (Pos < -400) {
+                    setPos = new Vec3(Pos + 100, -270, 0);
+                } else if (Pos > -90) {
+                    setPos = new Vec3(Pos - 100, -270, 0);
+                } else {
+                    if (Pos > -224) {
+                        setPos = new Vec3(Pos - 100, -270, 0);
+                    } else {
+                        setPos = new Vec3(Pos + 100, -270, 0);
+                    }
+                }
+                toolController.node.setPosition(setPos);
+            }
         }
     }
 
@@ -112,6 +242,8 @@ export class GameCtr extends Component {
         if (this.ballSprite){
             setTimeout(() => {
                 this.ballSprite.node.setPosition(ballPos);
+                this.PlayerCtrl.setRigidBody(2, 0, 0, 30);
+                this.robotCtrl.setRigidBody(2, 0, 0, 30);
             }, 1);
         }
         
@@ -133,20 +265,13 @@ export class GameCtr extends Component {
     onEndGame(){
         this.isSetlv = false;
         this.readylab.string = `EndGame!`;
+        this.ballSprite.node.setPosition(new Vec3(-224, 242, 0));
+        let ballCtr = this.ballSprite.getComponent(BallCtr);
+        ballCtr.setBalllv(0, 0, 0, 0); 
         
         setTimeout(() => {
             this.startMenu.node.active = true;
-        }, 3000);
-
-        this.Score = 0;
-        this.robtoScore = 0;
-        if (this.Scorelab) {
-            this.Scorelab.string = `${this.Score}`;
-        }
-
-        if (this.robotScorelab){
-            this.robotScorelab.string = `${this.robtoScore}`;
-        }
+        }, 2500);
     }
 
     // update (deltaTime: number) {

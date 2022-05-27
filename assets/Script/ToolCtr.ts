@@ -1,23 +1,21 @@
 
-import { _decorator, Component, Node, Collider2D, Contact2DType, IPhysics2DContact, Sprite, RigidBody2D, Vec2 } from 'cc';
+import { _decorator, Component, Node, Collider2D, Contact2DType, IPhysics2DContact } from 'cc';
 const { ccclass, property } = _decorator;
 
 /**
  * Predefined variables
- * Name = TableCtr
- * DateTime = Wed May 04 2022 21:18:28 GMT+0800 (台北標準時間)
+ * Name = ToolCtr
+ * DateTime = Fri May 20 2022 15:01:18 GMT+0800 (台北標準時間)
  * Author = jane1076
- * FileBasename = TableCtr.ts
- * FileBasenameNoExtension = TableCtr
- * URL = db://assets/Script/TableCtr.ts
+ * FileBasename = ToolCtr.ts
+ * FileBasenameNoExtension = ToolCtr
+ * URL = db://assets/Script/ToolCtr.ts
  * ManualUrl = https://docs.cocos.com/creator/3.4/manual/en/
  *
  */
  
-@ccclass('TableCtr')
-export class TableCtr extends Component {
-
-    private location;
+@ccclass('ToolCtr')
+export class ToolCtr extends Component {
 
     start () {
         let ballCollider = this.getComponent(Collider2D);
@@ -26,20 +24,8 @@ export class TableCtr extends Component {
         }
     }
 
-    private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-        if (otherCollider.name == "ball<CircleCollider2D>"){
-            let ballPos = otherCollider.node.getPosition().x;
+    private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {        
 
-            if (ballPos > -450 && ballPos < 7) {
-                this.location = 'left';
-            }
-    
-            if (ballPos < 450 && ballPos > 7) {
-                this.location = 'right';
-            }
-    
-            this.node.emit('TableRet', this.location);
-        }
     }
 
     // update (deltaTime: number) {

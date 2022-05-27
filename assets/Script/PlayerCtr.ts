@@ -1,7 +1,8 @@
 
 import { _decorator, Component, Node, input, Input, EventKeyboard, KeyCode, Vec3, 
-        Collider2D, Contact2DType, IPhysics2DContact, RigidBody2D, Sprite, Animation, BoxCollider2D, resources, SpriteFrame, UITransform} from 'cc';
+        Collider2D, Contact2DType, IPhysics2DContact, RigidBody2D, Sprite, Animation} from 'cc';
 import { BallCtr } from './BallCtr';
+import { ToolCtr } from './ToolCtr';
 const { ccclass, property } = _decorator;
 
 /**
@@ -31,6 +32,7 @@ export class PlayerCtr extends Component {
     private isAction = false;
     private speed = 0;
     private ActionType: string;
+    private nowPos: Vec3;
 
     start () {
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
@@ -47,9 +49,13 @@ export class PlayerCtr extends Component {
     }
 
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-       if (otherCollider.name == "ball<BoxCollider2D>"){           
-          this.setBallCtr(this.ActionType);
-       }  
+        if (otherCollider.name == "ball<CircleCollider2D>"){        
+           this.setBallCtr(this.ActionType);
+        }  
+
+        if (otherCollider.name == "tool<BoxCollider2D>"){
+            this.node.emit('GetTool', this);
+        }
     }
 
     setRigidBody(type, x, y, gv: number){
@@ -63,28 +69,65 @@ export class PlayerCtr extends Component {
 
     setBallCtr(type: string){
         if (this.ballSprite) {
+            let nowPos = this.node.getPosition().x;
             let ballController = this.ballSprite.getComponent(BallCtr);
+            let gv, rt, y: number;
+
+            if (ballController.getBallFrame() == 0){
+                gv = 3;
+                rt = 1;
+                y = 3;
+            } else if (ballController.getBallFrame() == 1){
+                gv = 1;
+                rt = 2;
+                y = -2;
+            } else{
+                gv = 0;
+                rt = 0;
+                y = 0;
+            }
+
+            console.log(`gv:: ${gv} rt:: ${rt} y:: ${y}`);
+
             if (type == "jump"){
-                ballController.setBalllv(15, -2, 8, 1);
-            } else {
-                ballController.setBalllv(13, 10, 1.5, 1);
+                if (nowPos > -150){
+                    ballController.setBalllv(10, -10 + y, 9 + gv, 0 + rt);
+                } else if (nowPos < -350){
+                    ballController.setBalllv(17, -5 + y, 7 + gv, 0 + rt);
+                } else {
+                    ballController.setBalllv(14, -8 + y, 8 + gv, 0 + rt);
+                }
+                console.log(`balllv:: ${this.node.getComponent(RigidBody2D).linearVelocity}`);
+            } else if (type == "lean"){
+                if (nowPos > -150) {
+                    ballController.setBalllv(10, 2 - y, 1.5 + gv, 1 + rt); 
+                } else if (nowPos < -300){
+                    ballController.setBalllv(17, 7 - y, 1 + gv, 1 + rt); 
+                } else {
+                    ballController.setBalllv(14, 4 - y, 1.5 + gv, 1 + rt);
+                }
+            } else{
+                ballController.setBalllv(20, 15 + y, 0.5 + gv, 1 + rt);
             }
         }        
     }
 
     onKeyDown(event: EventKeyboard) {
-        let Pos = this.node.getPosition();
         switch(event.keyCode){
             case KeyCode.ARROW_RIGHT:
-                this.setRigidBody(2, 15, null, 7);
+                if (!this.isAction){
+                    this.setRigidBody(2, 15, null, 0);
+                }
                 break;
 
             case KeyCode.ARROW_LEFT:
-                this.setRigidBody(2, -15, null, 7);
+                if (!this.isAction){
+                    this.setRigidBody(2, -15, null, 0);
+                }
                 break;
 
             case KeyCode.ARROW_DOWN:
-                if (Pos.x < -92 && !this.isAction){
+                if (this.nowPos.x < -92 && !this.isAction){
                     this.isAction = true;
                     this.animation.play("lean");
                     this.ActionType = "lean";
@@ -94,7 +137,7 @@ export class PlayerCtr extends Component {
             case KeyCode.SPACE:
                 if (!this.isAction){
                     this.isAction = true;
-                    this.setRigidBody(2, null, 40, 10);
+                    this.setRigidBody(2, null, 43, 10);
                     this.ActionType = "jump";
                 }
                 break;
@@ -104,23 +147,24 @@ export class PlayerCtr extends Component {
     onKeyUp(event: EventKeyboard){
         switch(event.keyCode){
             case KeyCode.ARROW_RIGHT:
-                this.setRigidBody(2, 0, 0, 30);
+                this.setRigidBody(2, 0, 0, 50);
                 break;
 
             case KeyCode.ARROW_LEFT:
-                this.setRigidBody(2, 0, 0, 30);
+                this.setRigidBody(2, 0, 0, 50);
                 break;  
         }  
     }
 
     update (deltaTime: number) {
+        this.nowPos = this.node.getPosition();
         if (this.isAction){
             this.speed += deltaTime;
-            if (this.speed >= 0.8){
+            if (this.speed >= 0.85){
                 this.isAction = false;
                 this.speed = 0;
                 this.ActionType = "ini";
-                this.setRigidBody(2, 0, 0, 30);
+                this.setRigidBody(2, 0, 0, 50);
             }
         }
     }

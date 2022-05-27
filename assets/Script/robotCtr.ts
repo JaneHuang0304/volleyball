@@ -41,18 +41,52 @@ export class robotCtr extends Component {
     }
 
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {        
-        if (otherCollider.name == "ball<BoxCollider2D>"){
+        if (otherCollider.name == "ball<CircleCollider2D>"){
             this.setBallCtr(this.ActType);
+        }
+
+        if (otherCollider.name == "tool<BoxCollider2D>"){
+            this.node.emit('GetTool', this);
         }
     }
 
     setBallCtr(typr: string){
         if (this.ballSprite) {
+            let nowPos = this.node.getPosition().x;
             let ballController = this.ballSprite.getComponent(BallCtr);
+            let gv, rt, y: number;
+            if (ballController.getBallFrame() == 0){
+                gv = 3;
+                rt = 1;
+                y = 3;
+            } else if (ballController.getBallFrame() == 1){
+                gv = 1;
+                rt = 2;
+                y = -2;
+            } else{
+                gv = 0;
+                rt = 0;
+                y = 0;
+            }  
+
             if (this.ActType == "jump"){
-                ballController.setBalllv(-15, -2, 8, 1);
-            }else{
-                ballController.setBalllv(-13, 10, 1.5, 1);
+                if (nowPos > 350){
+                    ballController.setBalllv(-17, -5 + y, 7 + gv, 0 + rt);
+                } else if (nowPos < 100) {
+                    ballController.setBalllv(-10, -10 + y, 9 + gv, 0 + rt);
+                } else {
+                    ballController.setBalllv(-14, -8 + y, 8 + gv, 0 + rt);
+                }
+            } else if (this.ActType == "lean"){
+                if (nowPos > 350) {
+                    ballController.setBalllv(-17, 10 - y, 1 + gv, 1 + rt);
+                } else if (nowPos < 100){
+                    ballController.setBalllv(-10, 4 - y, 1 + gv, 1 + rt);
+                } else {
+                    ballController.setBalllv(-14, 6 - y, 1 + gv, 1 + rt);
+                }
+            } else {
+                ballController.setBalllv(-20, 15 + y, 0.5 + gv, 1 + rt);
             }
         }        
     }
@@ -69,11 +103,11 @@ export class robotCtr extends Component {
     update (deltaTime: number) {
         if (this.isAction){
             this.speed += deltaTime;
-            if (this.speed >= 0.8){
+            if (this.speed >= 0.85){
                 this.isAction = false;
                 this.ActType = "ini";
                 this.speed = 0;
-                this.setRigidBody(2, 0, 0, 30);
+                this.setRigidBody(2, 0, 0, 50);
             }
         }else {
             if (this.ballSprite){
@@ -88,9 +122,9 @@ export class robotCtr extends Component {
                             if (rangX > 80) {
                                 this.ActType = "lean";
                                 if (robotPos.x > ballPos.x){
-                                    this.setRigidBody(2, -80, null, 7);
+                                    this.setRigidBody(2, -55, null, 7);
                                 } else{
-                                    this.setRigidBody(2, 80, null, 7);
+                                    this.setRigidBody(2, 55, null, 7);
                                 }
                             } else {
                                 if (robotPos.x > ballPos.x){
@@ -101,10 +135,10 @@ export class robotCtr extends Component {
                             }
                             setTimeout(() => {
                                 this.setRigidBody(2, 0, 0, 30);
-                            }, 10);
+                            }, 20);
                         } else {
                             if (ballPos.y < 130 && ballPos.y > 90){
-                                this.setRigidBody(2, null, 40, 10);
+                                this.setRigidBody(2, null, 43, 10);
                                 this.isAction = true;
                                 this.ActType = "jump";
                             }

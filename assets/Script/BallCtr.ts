@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Node, RigidBody2D, Vec3, BoxCollider2D, Collider2D, Contact2DType, IPhysics2DContact } from 'cc';
+import { _decorator, Component, Node, RigidBody2D, Vec3, Sprite, Collider2D, Contact2DType, IPhysics2DContact, CircleCollider2D} from 'cc';
 const { ccclass, property } = _decorator;
 
 /**
@@ -27,32 +27,70 @@ export class BallCtr extends Component {
     }
 
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-        if (otherCollider.name == "PlayerManager<BoxCollider2D>"){
+        let gv, rt, y: number;
+        let PosY = this.node.getPosition().y;
+
+        if (this.getBallFrame() == 0){
+            gv = 3;
+            rt = 0;
+            y = -3;
+        } else if (this.getBallFrame() == 1){
+            gv = 1;
+            rt = 2;
+            y = -2;
+        } else {
+            gv = 0;
+            rt = 0;     
+            y = 0;      
+        }
+
+        if (otherCollider.name == "PlayerManager<PolygonCollider2D>"){
             this.StartLocation = "left";
         }
 
-        if (otherCollider.name == "RobotManager<BoxCollider2D>") {
+        if (otherCollider.name == "RobotManager<PolygonCollider2D>"){
             this.StartLocation = "right";
         }
 
         if (otherCollider.name == "top<BoxCollider2D>"){         
             if (this.StartLocation == "right"){
-                this.setBalllv(-20, -3, 5, 0.5);
+                this.setBalllv(-20, -3 + y, 5 + gv, 0.5 + rt);
             } else {
-                this.setBalllv(20, -3, 5, 0.5);
+                this.setBalllv(20, -3 + y, 5 + gv, 0.5 + rt);
             }
         }  
+
+        if (otherCollider.name == "right<BoxCollider2D>" || otherCollider.name == "left<BoxCollider2D>"){
+            if (PosY <= -130){
+                this.setBalllv(0, 0, 4, 0.2);
+            } else {
+                this.setBalllv(18, -3 + y, 4 + gv, 0.5 + rt);
+            }
+        }
+
+        if (otherCollider.name == "net<BoxCollider2D>") {
+            this.setBalllv(0, 0, 4, 0.2);
+        }
      }
 
     setBalllv(x, y, gv, rt: number){
         let lv = this.node.getComponent(RigidBody2D).linearVelocity;
-        let gravy = this.node.getComponent(RigidBody2D).gravityScale;
-        gravy = gv;
-        lv.x = x;
-        lv.y = y;
+        lv.x = x == null ? lv.x : x;
+        lv.y = y == null ? lv.y : y;
         this.node.getComponent(RigidBody2D).linearVelocity = lv;    
-        this.node.getComponent(RigidBody2D).gravityScale = gravy;  
-        this.node.getComponent(BoxCollider2D).restitution = rt;
+        this.node.getComponent(RigidBody2D).gravityScale = gv;  
+        this.node.getComponent(CircleCollider2D).restitution = rt;
+    }
+
+    getBallFrame(){
+        let sprite = this.getComponent(Sprite).spriteFrame.name;
+        if (sprite == "ball2"){
+            return 0;
+        } else if (sprite == "ball3"){
+            return 1;
+        } else {
+            return -1;
+        }    
     }
 
     // update (deltaTime: number) {
