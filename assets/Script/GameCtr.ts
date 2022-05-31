@@ -1,6 +1,6 @@
 
 import { _decorator, Component, Node, Sprite, Label, Vec3, Prefab, PhysicsSystem2D, resources, SpriteFrame, instantiate, 
-        input, Input, EventKeyboard, KeyCode } from 'cc';
+        input, Input, EventKeyboard, KeyCode, Animation } from 'cc';
 import { TableCtr } from './TableCtr';
 import { BallCtr } from './BallCtr';
 import { PlayerCtr } from './PlayerCtr';
@@ -41,6 +41,12 @@ export class GameCtr extends Component {
     @property({type: Label})
     public readylab: Label | null = null;
 
+    @property({type: Label})
+    public rightlab: Label | null = null;
+
+    @property({type: Label})
+    public leftlab: Label | null = null;
+
     @property({ type: Sprite })
     public ballSprite: Sprite | null = null;
 
@@ -53,10 +59,17 @@ export class GameCtr extends Component {
     @property({ type: Prefab })
     public ToolPrefab: Prefab | null = null;
 
+    @property({ type: Sprite })
+    public racketSprite: Sprite | null = null;
+
+    @property({ type: Sprite })
+    public WintSprite: Sprite | null = null;
+
     private Score = 0;
     private robtoScore = 0;
     private isSetlv = true;
     private tool: Node;
+    public WinAmin: Animation;
 
     start () {
         PhysicsSystem2D.instance.enable = true;
@@ -71,7 +84,6 @@ export class GameCtr extends Component {
     }
 
     onKeyDown(event: EventKeyboard) {
-        let Pos = this.node.getPosition();
         switch(event.keyCode){
             case KeyCode.ENTER:
                 this.onButtonClick();
@@ -107,8 +119,21 @@ export class GameCtr extends Component {
             if (this.robotScorelab){
                 this.robotScorelab.string = `${this.robtoScore}`;
             }
+
+            if (this.tool != undefined){
+                this.tool.active = false;
+                this.tool = undefined;
+                this.node.removeChild(this.tool);
+            }
+
             let picUrl = 'back/spriteFrame';
             this.setBG(picUrl);
+            this.PlayerCtrl.Sloth.node.active = true;
+            this.robotCtrl.Sloth2.node.active = true;
+            this.WintSprite.node.active = false;
+            this.racketSprite.node.active = false;
+            this.rightlab.node.active = false;
+            this.leftlab.node.active = false;
             this.startMenu.node.active = false;
             this.readylab.string = `Ready!`;
             this.readylab.node.active = true;
@@ -192,14 +217,14 @@ export class GameCtr extends Component {
             if (location == "right") {
                 let Pos = this.robotCtrl.node.getPosition().x;
                 if (Pos < 72){
-                    setPos = new Vec3(Pos + 100, -270, 0);
+                    setPos = new Vec3(Pos + 100, -255, 0);
                 } else if (Pos > 400){
-                    setPos = new Vec3(Pos - 100, -270, 0);
+                    setPos = new Vec3(Pos - 100, -255, 0);
                 } else {
                     if (Pos > 224){
-                        setPos = new Vec3(Pos - 100, -270, 0);
+                        setPos = new Vec3(Pos - 100, -255, 0);
                     } else {
-                        setPos = new Vec3(Pos + 100, -270, 0);
+                        setPos = new Vec3(Pos + 100, -255, 0);
                     }
                 }
                 toolController.node.setPosition(setPos);
@@ -208,14 +233,14 @@ export class GameCtr extends Component {
             if (location == "left") {
                 let Pos = this.PlayerCtrl.node.getPosition().x;
                 if (Pos < -400) {
-                    setPos = new Vec3(Pos + 100, -270, 0);
+                    setPos = new Vec3(Pos + 100, -255, 0);
                 } else if (Pos > -90) {
-                    setPos = new Vec3(Pos - 100, -270, 0);
+                    setPos = new Vec3(Pos - 100, -255, 0);
                 } else {
                     if (Pos > -224) {
-                        setPos = new Vec3(Pos - 100, -270, 0);
+                        setPos = new Vec3(Pos - 100, -255, 0);
                     } else {
-                        setPos = new Vec3(Pos + 100, -270, 0);
+                        setPos = new Vec3(Pos + 100, -255, 0);
                     }
                 }
                 toolController.node.setPosition(setPos);
@@ -263,15 +288,29 @@ export class GameCtr extends Component {
     }
 
     onEndGame(){
+        this.WinAmin = this.WintSprite.getComponent(Animation);
         this.isSetlv = false;
         this.readylab.string = `EndGame!`;
-        this.ballSprite.node.setPosition(new Vec3(-224, 242, 0));
+        if (this.Score > this.robtoScore){
+            this.leftlab.node.active = true;
+            this.PlayerCtrl.Sloth.node.active = false;
+            this.WintSprite.node.active = true;
+            this.WintSprite.node.setPosition(new Vec3(-224, -198, 0));
+        } else{
+            this.rightlab.node.active = true;
+            this.robotCtrl.Sloth2.node.active = false;
+            this.WintSprite.node.active = true;
+            this.WintSprite
+            this.WintSprite.node.setPosition(new Vec3(224, -198, 0));
+        }
+        this.WinAmin.play();
         let ballCtr = this.ballSprite.getComponent(BallCtr);
         ballCtr.setBalllv(0, 0, 0, 0); 
+        this.ballSprite.node.setPosition(new Vec3(-224, 242, 0));
         
         setTimeout(() => {
             this.startMenu.node.active = true;
-        }, 2500);
+        }, 3000);
     }
 
     // update (deltaTime: number) {

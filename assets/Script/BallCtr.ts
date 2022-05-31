@@ -32,8 +32,8 @@ export class BallCtr extends Component {
 
         if (this.getBallFrame() == 0){
             gv = 3;
-            rt = 0;
-            y = -3;
+            rt = 1;
+            y = -4;
         } else if (this.getBallFrame() == 1){
             gv = 1;
             rt = 2;
@@ -60,6 +60,10 @@ export class BallCtr extends Component {
             }
         }  
 
+        if (otherCollider.name == "Racket<BoxCollider2D>"){
+            this.setBalllv(20, -10 + y, 5 + gv, 0.5 + rt);
+        }
+
         if (otherCollider.name == "right<BoxCollider2D>" || otherCollider.name == "left<BoxCollider2D>"){
             if (PosY <= -130){
                 this.setBalllv(0, 0, 4, 0.2);
@@ -71,6 +75,10 @@ export class BallCtr extends Component {
         if (otherCollider.name == "net<BoxCollider2D>") {
             this.setBalllv(0, 0, 4, 0.2);
         }
+
+        console.log(`lv:: ${this.node.getComponent(RigidBody2D).linearVelocity}`);
+        console.log(`gv:: ${this.node.getComponent(RigidBody2D).gravityScale}`);
+        console.log(`rt:: ${this.node.getComponent(CircleCollider2D).restitution}`);
      }
 
     setBalllv(x, y, gv, rt: number){

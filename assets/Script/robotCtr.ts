@@ -58,7 +58,7 @@ export class robotCtr extends Component {
             if (ballController.getBallFrame() == 0){
                 gv = 3;
                 rt = 1;
-                y = 3;
+                y = -4;
             } else if (ballController.getBallFrame() == 1){
                 gv = 1;
                 rt = 2;
@@ -114,7 +114,6 @@ export class robotCtr extends Component {
                 this.moveSpeed += deltaTime;
                 let robotPos = this.node.getPosition();
                 let ballPos = this.ballSprite.node.getPosition();
-                let ballbody = this.ballSprite.node.getComponent(RigidBody2D).linearVelocity;
                 let rangX = robotPos.x - ballPos.x > 0 ? robotPos.x - ballPos.x : -(robotPos.x - ballPos.x);
                 if (ballPos.x > 70 && ballPos.x < 400){
                     if (this.moveSpeed > 0.06){    
@@ -122,9 +121,9 @@ export class robotCtr extends Component {
                             if (rangX > 80) {
                                 this.ActType = "lean";
                                 if (robotPos.x > ballPos.x){
-                                    this.setRigidBody(2, -55, null, 7);
+                                    this.setRigidBody(2, -50, null, 7);
                                 } else{
-                                    this.setRigidBody(2, 55, null, 7);
+                                    this.setRigidBody(2, 50, null, 7);
                                 }
                             } else {
                                 if (robotPos.x > ballPos.x){
@@ -134,10 +133,10 @@ export class robotCtr extends Component {
                                 }
                             }
                             setTimeout(() => {
-                                this.setRigidBody(2, 0, 0, 30);
+                                this.setRigidBody(2, 0, 0, 50);
                             }, 20);
                         } else {
-                            if (ballPos.y < 130 && ballPos.y > 90){
+                            if (ballPos.y < 120 && ballPos.y > -150){
                                 this.setRigidBody(2, null, 43, 10);
                                 this.isAction = true;
                                 this.ActType = "jump";

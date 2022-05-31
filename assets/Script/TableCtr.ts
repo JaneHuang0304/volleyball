@@ -30,11 +30,11 @@ export class TableCtr extends Component {
         if (otherCollider.name == "ball<CircleCollider2D>"){
             let ballPos = otherCollider.node.getPosition().x;
 
-            if (ballPos > -450 && ballPos < 7) {
+            if (ballPos > -470 && ballPos < 7) {
                 this.location = 'left';
             }
     
-            if (ballPos < 450 && ballPos > 7) {
+            if (ballPos < 470 && ballPos > 7) {
                 this.location = 'right';
             }
     

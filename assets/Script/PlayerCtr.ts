@@ -23,6 +23,9 @@ export class PlayerCtr extends Component {
     @property({ type: Sprite })
     public ballSprite: Sprite | null = null;
 
+    @property({ type: Sprite })
+    public racketSprite: Sprite | null = null;
+
     @property({ type: Component })
     public Sloth: Component | null = null;
 
@@ -65,6 +68,14 @@ export class PlayerCtr extends Component {
         lv.y = y == null ? lv.y : y;
         this.node.getComponent(RigidBody2D).linearVelocity = lv;
         this.node.getComponent(RigidBody2D).gravityScale = gv;
+
+        if (this.racketSprite){
+            let racketlv = this.racketSprite.getComponent(RigidBody2D).linearVelocity;
+            racketlv.x = x == null ? lv.x : x;
+            racketlv.y = y == null ? lv.y : y;
+            this.racketSprite.getComponent(RigidBody2D).linearVelocity = racketlv;
+            this.racketSprite.getComponent(RigidBody2D).gravityScale = gv;
+        }
     }
 
     setBallCtr(type: string){
@@ -76,7 +87,7 @@ export class PlayerCtr extends Component {
             if (ballController.getBallFrame() == 0){
                 gv = 3;
                 rt = 1;
-                y = 3;
+                y = -4;
             } else if (ballController.getBallFrame() == 1){
                 gv = 1;
                 rt = 2;
@@ -87,8 +98,6 @@ export class PlayerCtr extends Component {
                 y = 0;
             }
 
-            console.log(`gv:: ${gv} rt:: ${rt} y:: ${y}`);
-
             if (type == "jump"){
                 if (nowPos > -150){
                     ballController.setBalllv(10, -10 + y, 9 + gv, 0 + rt);
@@ -97,7 +106,6 @@ export class PlayerCtr extends Component {
                 } else {
                     ballController.setBalllv(14, -8 + y, 8 + gv, 0 + rt);
                 }
-                console.log(`balllv:: ${this.node.getComponent(RigidBody2D).linearVelocity}`);
             } else if (type == "lean"){
                 if (nowPos > -150) {
                     ballController.setBalllv(10, 2 - y, 1.5 + gv, 1 + rt); 
@@ -116,13 +124,13 @@ export class PlayerCtr extends Component {
         switch(event.keyCode){
             case KeyCode.ARROW_RIGHT:
                 if (!this.isAction){
-                    this.setRigidBody(2, 15, null, 0);
+                    this.setRigidBody(2, 25, null, 0);
                 }
                 break;
 
             case KeyCode.ARROW_LEFT:
                 if (!this.isAction){
-                    this.setRigidBody(2, -15, null, 0);
+                    this.setRigidBody(2, -25, null, 0);
                 }
                 break;
 
@@ -139,6 +147,7 @@ export class PlayerCtr extends Component {
                     this.isAction = true;
                     this.setRigidBody(2, null, 43, 10);
                     this.ActionType = "jump";
+                    this.racketSprite.node.active = true;
                 }
                 break;
         }  
@@ -165,6 +174,11 @@ export class PlayerCtr extends Component {
                 this.speed = 0;
                 this.ActionType = "ini";
                 this.setRigidBody(2, 0, 0, 50);
+
+                // this.racketSprite.getComponent(RigidBody2D).linearVelocity.x = 0;
+                // this.racketSprite.getComponent(RigidBody2D).linearVelocity.y = 0;
+                // this.racketSprite.node.setPosition(new Vec3(-13, 120, 0));
+                // this.racketSprite.node.active = false;
             }
         }
     }
