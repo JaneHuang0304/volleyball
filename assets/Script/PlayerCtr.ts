@@ -23,9 +23,6 @@ export class PlayerCtr extends Component {
     @property({ type: Sprite })
     public ballSprite: Sprite | null = null;
 
-    @property({ type: Sprite })
-    public racketSprite: Sprite | null = null;
-
     @property({ type: Component })
     public Sloth: Component | null = null;
 
@@ -51,6 +48,7 @@ export class PlayerCtr extends Component {
         
     }
 
+    //玩家碰撞事件
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
         if (otherCollider.name == "ball<CircleCollider2D>"){        
            this.setBallCtr(this.ActionType);
@@ -60,7 +58,7 @@ export class PlayerCtr extends Component {
             this.node.emit('GetTool', this);
         }
     }
-
+    //設定玩家線性、重力、反彈力道
     setRigidBody(type, x, y, gv: number){
         this.node.getComponent(RigidBody2D).type = type;
         let lv = this.node.getComponent(RigidBody2D).linearVelocity;
@@ -68,16 +66,8 @@ export class PlayerCtr extends Component {
         lv.y = y == null ? lv.y : y;
         this.node.getComponent(RigidBody2D).linearVelocity = lv;
         this.node.getComponent(RigidBody2D).gravityScale = gv;
-
-        if (this.racketSprite){
-            let racketlv = this.racketSprite.getComponent(RigidBody2D).linearVelocity;
-            racketlv.x = x == null ? lv.x : x;
-            racketlv.y = y == null ? lv.y : y;
-            this.racketSprite.getComponent(RigidBody2D).linearVelocity = racketlv;
-            this.racketSprite.getComponent(RigidBody2D).gravityScale = gv;
-        }
     }
-
+    //設定玩家碰撞球之後球體反彈力道
     setBallCtr(type: string){
         if (this.ballSprite) {
             let nowPos = this.node.getPosition().x;
@@ -147,7 +137,6 @@ export class PlayerCtr extends Component {
                     this.isAction = true;
                     this.setRigidBody(2, null, 43, 10);
                     this.ActionType = "jump";
-                    this.racketSprite.node.active = true;
                 }
                 break;
         }  
@@ -156,11 +145,11 @@ export class PlayerCtr extends Component {
     onKeyUp(event: EventKeyboard){
         switch(event.keyCode){
             case KeyCode.ARROW_RIGHT:
-                this.setRigidBody(2, 0, 0, 50);
+                this.setRigidBody(2, 0, 0, 80);
                 break;
 
             case KeyCode.ARROW_LEFT:
-                this.setRigidBody(2, 0, 0, 50);
+                this.setRigidBody(2, 0, 0, 80);
                 break;  
         }  
     }
@@ -173,12 +162,7 @@ export class PlayerCtr extends Component {
                 this.isAction = false;
                 this.speed = 0;
                 this.ActionType = "ini";
-                this.setRigidBody(2, 0, 0, 50);
-
-                // this.racketSprite.getComponent(RigidBody2D).linearVelocity.x = 0;
-                // this.racketSprite.getComponent(RigidBody2D).linearVelocity.y = 0;
-                // this.racketSprite.node.setPosition(new Vec3(-13, 120, 0));
-                // this.racketSprite.node.active = false;
+                this.setRigidBody(2, 0, 0, 80);
             }
         }
     }

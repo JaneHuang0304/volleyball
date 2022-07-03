@@ -39,7 +39,7 @@ export class robotCtr extends Component {
             ballCollider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
         }
     }
-
+    //機器人碰撞事件
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {        
         if (otherCollider.name == "ball<CircleCollider2D>"){
             this.setBallCtr(this.ActType);
@@ -49,7 +49,7 @@ export class robotCtr extends Component {
             this.node.emit('GetTool', this);
         }
     }
-
+    //設置機器人碰撞球之後球體反彈力道
     setBallCtr(typr: string){
         if (this.ballSprite) {
             let nowPos = this.node.getPosition().x;
@@ -90,7 +90,7 @@ export class robotCtr extends Component {
             }
         }        
     }
-
+    //設定機器人線性、重力、反彈力道
     setRigidBody(type, x, y, gv: number){
         this.node.getComponent(RigidBody2D).type = type;
         let lv = this.node.getComponent(RigidBody2D).linearVelocity;
@@ -100,6 +100,7 @@ export class robotCtr extends Component {
         this.node.getComponent(RigidBody2D).gravityScale = gv;
     }
 
+    //機器人動作判斷
     update (deltaTime: number) {
         if (this.isAction){
             this.speed += deltaTime;
@@ -110,6 +111,7 @@ export class robotCtr extends Component {
                 this.setRigidBody(2, 0, 0, 50);
             }
         }else {
+            //依照球的位置判斷機器人位置及動作
             if (this.ballSprite){
                 this.moveSpeed += deltaTime;
                 let robotPos = this.node.getPosition();
@@ -133,7 +135,7 @@ export class robotCtr extends Component {
                                 }
                             }
                             setTimeout(() => {
-                                this.setRigidBody(2, 0, 0, 50);
+                                this.setRigidBody(2, 0, 0, 80);
                             }, 20);
                         } else {
                             if (ballPos.y < 120 && ballPos.y > -150){

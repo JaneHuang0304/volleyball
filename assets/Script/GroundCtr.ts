@@ -14,8 +14,8 @@ const { ccclass, property } = _decorator;
  *
  */
  
-@ccclass('TableCtr')
-export class TableCtr extends Component {
+@ccclass('GroundCtr')
+export class GroundCtr extends Component {
 
     private location;
 
@@ -27,6 +27,8 @@ export class TableCtr extends Component {
     }
 
     private onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
+       //判斷落地點
+       console.log('onBeginContact');
         if (otherCollider.name == "ball<CircleCollider2D>"){
             let ballPos = otherCollider.node.getPosition().x;
 
@@ -37,8 +39,8 @@ export class TableCtr extends Component {
             if (ballPos < 470 && ballPos > 7) {
                 this.location = 'right';
             }
-    
-            this.node.emit('TableRet', this.location);
+            
+            this.node.emit('GroundRet', this.location);
         }
     }
 

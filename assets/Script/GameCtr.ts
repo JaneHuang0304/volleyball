@@ -1,7 +1,7 @@
 
 import { _decorator, Component, Node, Sprite, Label, Vec3, Prefab, PhysicsSystem2D, resources, SpriteFrame, instantiate, 
         input, Input, EventKeyboard, KeyCode, Animation } from 'cc';
-import { TableCtr } from './TableCtr';
+import { GroundCtr } from './GroundCtr';
 import { BallCtr } from './BallCtr';
 import { PlayerCtr } from './PlayerCtr';
 import { robotCtr } from './robotCtr';
@@ -29,8 +29,8 @@ export class GameCtr extends Component {
     @property({type: robotCtr})
     public robotCtrl: robotCtr | null = null;   
 
-    @property({type: TableCtr})
-    public tableCtrl: TableCtr | null = null;
+    @property({type: GroundCtr})
+    public groundCtrl: GroundCtr | null = null;
 
     @property({type: Label})
     public Scorelab: Label | null = null;
@@ -60,9 +60,6 @@ export class GameCtr extends Component {
     public ToolPrefab: Prefab | null = null;
 
     @property({ type: Sprite })
-    public racketSprite: Sprite | null = null;
-
-    @property({ type: Sprite })
     public WintSprite: Sprite | null = null;
 
     private Score = 0;
@@ -72,10 +69,12 @@ export class GameCtr extends Component {
     public WinAmin: Animation;
 
     start () {
-        PhysicsSystem2D.instance.enable = true;
-        PhysicsSystem2D.instance.debugDrawFlags = 1;
-        this.tableCtrl?.node.on('TableRet', this.onTableRet, this);
-        this.tableCtrl?.node.on('TableRet', this.onTableRet, this);
+        // PhysicsSystem2D.instance.enable = true;
+        // PhysicsSystem2D.instance.debugDrawFlags = 1;
+
+        console.log(`this.groundCtrl: ${this.groundCtrl}`);
+
+        this.groundCtrl?.node.on('GroundRet', this.onGroundRet, this);
         this.robotCtrl?.node.on('GetTool', this.onGetTool, this);
         this.PlayerCtrl?.node.on('GetTool', this.onGetTool, this);
         if (this.startMenu.node.active == true){
@@ -91,7 +90,9 @@ export class GameCtr extends Component {
         }  
     }
 
+    //取得工具
     onGetTool(){
+        //隨機產生工具
         let rand = Math.floor(Math.random()*2);
         let picUrl: string;
         if (rand == 0) {
@@ -108,7 +109,9 @@ export class GameCtr extends Component {
         }, 1);
     }
 
+    //遊戲開始按鈕動作
     async onButtonClick(){
+        //畫面功能重置
         if (this.startMenu){
             this.Score = 0;
             this.robtoScore = 0;
@@ -120,18 +123,11 @@ export class GameCtr extends Component {
                 this.robotScorelab.string = `${this.robtoScore}`;
             }
 
-            if (this.tool != undefined){
-                this.tool.active = false;
-                this.tool = undefined;
-                this.node.removeChild(this.tool);
-            }
-
             let picUrl = 'back/spriteFrame';
             this.setBG(picUrl);
             this.PlayerCtrl.Sloth.node.active = true;
             this.robotCtrl.Sloth2.node.active = true;
             this.WintSprite.node.active = false;
-            this.racketSprite.node.active = false;
             this.rightlab.node.active = false;
             this.leftlab.node.active = false;
             this.startMenu.node.active = false;
@@ -142,7 +138,9 @@ export class GameCtr extends Component {
         }
     }
 
-    async onTableRet(location: string){
+    //球體打到地板
+    async onGroundRet(location: string){
+        console.log(`onGroundRet`);
         let startLoc: string;
         let ballController = this.ballSprite.getComponent(BallCtr);
         
@@ -179,7 +177,9 @@ export class GameCtr extends Component {
         }
 
         if (this.Score == 10 || this.robtoScore == 10) {
-            this.onEndGame();
+            setTimeout(() => {
+                this.onEndGame();
+            }, 0);
         }else {
             if (this.Scorelab) {
                 this.Scorelab.string = `${this.Score}`;
@@ -193,6 +193,7 @@ export class GameCtr extends Component {
         }
     }
 
+    //設置背景圖
     setBG(pic: string){
         resources.load(pic, SpriteFrame, (err: any, spriteFrame) => {
             let sprite = this.BGSprite.getComponent(Sprite);
@@ -200,6 +201,7 @@ export class GameCtr extends Component {
          });
     }
 
+    //設置球的圖
     setBallType(pic: string){
         resources.load(pic, SpriteFrame, (err: any, spriteFrame) => {
             let sprite = this.ballSprite.getComponent(Sprite);
@@ -207,8 +209,10 @@ export class GameCtr extends Component {
          });
     }
 
+    //設定獲得的工具
     setTool(location: string){
         if (this.ToolPrefab){
+            //
             this.tool = instantiate(this.ToolPrefab);
             let toolController = this.tool.getComponent(ToolCtr); 
             this.node.addChild(this.tool); 
@@ -248,6 +252,7 @@ export class GameCtr extends Component {
         }
     }
 
+    //畫面設定重置
     async onReSet(start: string){
         let ballPos = new Vec3();
         let ballController: BallCtr;
@@ -286,7 +291,7 @@ export class GameCtr extends Component {
             }
         }); 
     }
-
+    //遊戲結束
     onEndGame(){
         this.WinAmin = this.WintSprite.getComponent(Animation);
         this.isSetlv = false;
@@ -303,6 +308,13 @@ export class GameCtr extends Component {
             this.WintSprite
             this.WintSprite.node.setPosition(new Vec3(224, -198, 0));
         }
+
+        if (this.tool != undefined){
+            this.tool.active = false;
+            this.tool = undefined;
+            this.node.removeChild(this.tool);
+        }
+        
         this.WinAmin.play();
         let ballCtr = this.ballSprite.getComponent(BallCtr);
         ballCtr.setBalllv(0, 0, 0, 0); 

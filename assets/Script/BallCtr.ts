@@ -17,9 +17,11 @@ const { ccclass, property } = _decorator;
 @ccclass('BallCtr')
 export class BallCtr extends Component {
 
+    //發球方
     private StartLocation: string;
 
     start () {
+        //求偵測碰撞
         let ballCollider = this.getComponent(Collider2D);
         if (ballCollider) {
             ballCollider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
@@ -30,6 +32,7 @@ export class BallCtr extends Component {
         let gv, rt, y: number;
         let PosY = this.node.getPosition().y;
 
+        //判斷球的種類改變正立即反彈力道
         if (this.getBallFrame() == 0){
             gv = 3;
             rt = 1;
@@ -44,14 +47,17 @@ export class BallCtr extends Component {
             y = 0;      
         }
 
+        //球體碰撞玩家反彈設置
         if (otherCollider.name == "PlayerManager<PolygonCollider2D>"){
             this.StartLocation = "left";
         }
 
+        //球體碰撞機器人反彈設置
         if (otherCollider.name == "RobotManager<PolygonCollider2D>"){
             this.StartLocation = "right";
         }
 
+        //球體碰撞UI畫面上方反彈設置
         if (otherCollider.name == "top<BoxCollider2D>"){         
             if (this.StartLocation == "right"){
                 this.setBalllv(-20, -3 + y, 5 + gv, 0.5 + rt);
@@ -60,27 +66,27 @@ export class BallCtr extends Component {
             }
         }  
 
+        //
         if (otherCollider.name == "Racket<BoxCollider2D>"){
             this.setBalllv(20, -10 + y, 5 + gv, 0.5 + rt);
         }
 
+        //球體碰撞UI畫面左右反彈設置
         if (otherCollider.name == "right<BoxCollider2D>" || otherCollider.name == "left<BoxCollider2D>"){
-            if (PosY <= -130){
+            if (PosY <= -135){
                 this.setBalllv(0, 0, 4, 0.2);
             } else {
                 this.setBalllv(18, -3 + y, 4 + gv, 0.5 + rt);
             }
         }
 
+        //球打到網子的反彈設置
         if (otherCollider.name == "net<BoxCollider2D>") {
             this.setBalllv(0, 0, 4, 0.2);
         }
-
-        console.log(`lv:: ${this.node.getComponent(RigidBody2D).linearVelocity}`);
-        console.log(`gv:: ${this.node.getComponent(RigidBody2D).gravityScale}`);
-        console.log(`rt:: ${this.node.getComponent(CircleCollider2D).restitution}`);
      }
 
+     //設置球的線性、重力、質量
     setBalllv(x, y, gv, rt: number){
         let lv = this.node.getComponent(RigidBody2D).linearVelocity;
         lv.x = x == null ? lv.x : x;
@@ -90,6 +96,7 @@ export class BallCtr extends Component {
         this.node.getComponent(CircleCollider2D).restitution = rt;
     }
 
+    //取得球的種類
     getBallFrame(){
         let sprite = this.getComponent(Sprite).spriteFrame.name;
         if (sprite == "ball2"){
